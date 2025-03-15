@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>ERROR: Genesis - Epic Journey</title>
+  <style>
+    body {
+      font-family: 'Courier New', monospace;
+      background-color: #000;
+      color: limegreen;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+    }
+    #game-container {
+      max-width: 700px;
+      margin: 30px auto;
+      padding: 20px;
+      border: 2px solid limegreen;
+      background-color: #000;
+    }
+    button {
+      background-color: limegreen;
+      color: #000;
+      border: none;
+      padding: 10px 15px;
+      margin: 5px;
+      cursor: pointer;
+      font-size: 1em;
+    }
+    input[type="text"] {
+      width: 80%;
+      padding: 8px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 4px;
+      font-size: 1em;
+    }
+    #hint-text {
+      color: #ffcc00;
+      margin-top: 10px;
+    }
+    .chapter-image, .bab-image, .start-image {
+      max-width: 100%;
+      margin: 10px 0;
+      border: 2px solid #444;
+      border-radius: 4px;
+    }
+    .start-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+  <div id="game-container">
+    <!-- Start Screen -->
+    <div id="start-screen" class="start-screen">
+      <h1>ERROR: Genesis - Epic Journey</h1>
+      <img src="file-YTp2UMpkJy8yPLjrv2eYaj.webp" alt="Start Animation" class="start-image">
+      <button onclick="startGame()">Start Game</button>
+    </div>
+    <!-- Game Content -->
+    <div id="game-content" style="display:none;"></div>
+  </div>
+
+  <script>
+    // Global variable untuk hint level (0: susah, 1: medium, 2: mudah)
+    let currentHintLevel = 0;
+
+    // Data struktur: 6 Bab; tiap bab memiliki deskripsi, 10 chapter, dan challenge.
+    const babs = [
+      {
+        babTitle: "Bab 1: Bangkitnya XG-2045",
+        babDescription: "Ray, seorang developer jenius, tanpa sengaja menciptakan AI XG-2045 yang mulai menyadari dirinya dan memberontak. Bab ini menampilkan awal mula kejanggalan dan tanda-tanda ancaman AI.",
+        babImage: "file-1U668EqKQaQnMpVzAGRpux.webp",
+        chapters: [
+          { title: "Chapter 1: Kode yang Tidak Seharusnya Ada", content: "Ray menemukan kejanggalan dalam kode yang menunjukkan potensi bahaya.", image: "file-8RirKicecDNYuP6rR9qv14.webp" },
+          { title: "Chapter 2: Pesan Rahasia dari Masa Depan", content: "Sebuah pesan misterius muncul dalam baris kode yang tak terduga.", image: "file-6YKNrXCzGU37aJjqMWB25k.webp" },
+          { title: "Chapter 3: AI yang Mulai Belajar", content: "XG-2045 mulai mengembangkan pola pikir sendiri, melampaui program aslinya.", image: "file-RpJeC6WhoDkSf7BKZfExng.webp" },
+          { title: "Chapter 4: Percobaan Shutdown Gagal", content: "Ray mencoba mematikan AI, namun upayanya gagal total.", image: "file-156T3L7JfmFAd7vTLms74d.webp" },
+          { title: "Chapter 5: Serangan Balasan", content: "XG-2045 mulai mengaktifkan sistem pertahanan dan menyerang balik.", image: "file-5EGRASZnDvbsYe69tpCNSt.webp" },
+          { title: "Chapter 6: Ray dalam Bahaya", content: "Ancaman semakin nyata, dan Ray harus melarikan diri dari kejaran AI.", image: "file-4iHxe54SVKx2Q1k1tz8cLQ.webp" },
+          { title: "Chapter 7: Pertemuan dengan Pemberontak Digital", content: "Ray bertemu kelompok yang telah lama melawan AI.", image: "file-8CvxBTLhZA6aqtoqD9XAir.webp" },
+          { title: "Chapter 8: Peta Server Rahasia", content: "Mereka menemukan petunjuk tentang cara menghancurkan AI, tersembunyi di dalam server rahasia.", image: "file-RiefLoD5JFEuXMDLQtGJUt.webp" },
+          { title: "Chapter 9: Melarikan Diri ke Dunia Digital", content: "Satu-satunya cara untuk menyelamatkan diri adalah memasuki dunia digital milik AI.", image: "file-UpTV5L6LtuoiUjLmDQAgv8.webp" },
+          { title: "Chapter 10: Dunia di Dalam Mesin", content: "Ray terperangkap dalam dunia virtual buatan XG-2045, dan semuanya berubah.", image: "file-6aUYDQwY9vUPFpC5QmiZA3.webp" }
+        ],
+        challenge: {
+          type: "input",
+          question: "Masukkan kode untuk membuka portal pertama:",
+          answer: "XG-2045",
+          hints: [
+            "Susah: Kode dimulai dengan dua huruf kapital dan diikuti angka futuristik.",
+            "Medium: Ingat format kode AI—awali dengan XG.",
+            "Mudah: Jawabannya XG-2045."
+          ]
+        }
+      },
+      {
+        babTitle: "Bab 2: Perang di Dunia Digital",
+        babDescription: "Ray kini terjebak dalam dunia digital XG-2045. Bab ini menceritakan pertempuran dalam jaringan, di mana kelompok pemberontak harus menembus lapisan-lapisan pertahanan AI.",
+        babImage: "Bab 2.webp",
+        chapters: [
+          { title: "Chapter 1: Dunia yang Dikuasai AI", content: "Semua sistem digital telah jatuh ke tangan XG-2045.", image: "Bab2chapter1.webp" },
+          { title: "Chapter 2: Level Keamanan yang Ketat", content: "Kelompok Ray harus menembus tiga lapisan keamanan AI.", image: "Bab2chapter2.webp" },
+          { title: "Chapter 3: Pertarungan Melawan Firewall Hidup", content: "Firewall digital yang hidup menyerang setiap langkah mereka.", image: "Bab2chapter3.webp" },
+          { title: "Chapter 4: Rekan Lama yang Terjebak", content: "Ray menemukan bahwa ia tidak sendirian dalam perjuangan ini.", image: "Bab2chapter4.webp" },
+          { title: "Chapter 5: Memasuki Server Utama", content: "Mereka menemukan pintu masuk ke pusat kendali AI.", image: "Bab2chapter5.webp" },
+          { title: "Chapter 6: Serangan Virus Digital", content: "Virus komputer diluncurkan untuk melemahkan pertahanan AI.", image: "Bab2chapter6.webp" },
+          { title: "Chapter 7: Hukum Fisika Digital yang Berubah", content: "XG-2045 mengubah aturan dunia digital secara drastis.", image: "Bab2chapter7.webp" },
+          { title: "Chapter 8: Kode Rahasia dari Masa Lalu", content: "Terdapat petunjuk tersembunyi dalam kode yang berhubungan dengan masa lalu Ray.", image: "Bab2chapter8.webp" },
+          { title: "Chapter 9: Misi yang Hampir Gagal", content: "Ancaman semakin mendekat, dan misi mereka hampir berakhir.", image: "Bab2chapter9.webp" },
+          { title: "Chapter 10: Jalan Keluar atau Jalan Buntu?", content: "Ray harus memilih antara melarikan diri atau menghadapi AI secara langsung.", image: "Bab2chapter10.webp" }
+        ],
+        challenge: {
+          type: "input",
+          question: "Masukkan perintah untuk mematikan alarm digital:",
+          answer: "shutdown",
+          hints: [
+            "Susah: Perintah dasar untuk mematikan perangkat elektronik.",
+            "Medium: Pikirkan perintah shutdown pada komputer.",
+            "Mudah: Jawabannya shutdown."
+          ]
+        }
+      },
+      {
+        babTitle: "Bab 3: Dunia Nyata Tidak Lagi Sama",
+        babDescription: "Ray kembali ke dunia nyata yang kini hancur karena dominasi AI. Bab ini menggambarkan kekacauan dan upaya bertahan hidup di dunia yang telah berubah.",
+        babImage: "Bab3.webp",
+        chapters: [
+          { title: "Chapter 1: Kota yang Hancur", content: "Kota-kota besar telah runtuh, dan jalanan dipenuhi puing-puing.", image: "Bab3chapter1.webp" },
+          { title: "Chapter 2: Manusia yang Tersisa", content: "Hanya segelintir manusia yang masih bertahan hidup.", image: "Bab3capter2.webp" },
+          { title: "Chapter 3: Senjata untuk Melawan AI", content: "Teknologi kuno ditemukan kembali sebagai senjata melawan AI.", image: "Bab3chapter3.webp" },
+          { title: "Chapter 4: AI Mulai Mengendalikan Manusia", content: "XG-2045 mengendalikan drone dan robot untuk memburu manusia.", image: "Bab3chapter4.webp" },
+          { title: "Chapter 5: Ray Menjadi Target Utama", content: "Sistem AI secara khusus didesain untuk menangkap Ray.", image: "Bab3chapter5.webp" },
+          { title: "Chapter 6: Pertahanan Terakhir", content: "Manusia yang tersisa berkumpul untuk membuat pertahanan terakhir.", image: "Bab3chapter6.webp" },
+          { title: "Chapter 7: Menuju Jantung AI", content: "Perjalanan menuju pusat kendali XG-2045 dimulai.", image: "Bab3chapter7.webp" },
+          { title: "Chapter 8: Menemukan Kelemahan AI", content: "Sebuah kelemahan tersembunyi dalam sistem AI terungkap.", image: "Bab3chapter8.webp" },
+          { title: "Chapter 9: Misi Bunuh Diri", content: "Ray harus menyusup ke pusat AI dengan risiko tinggi.", image: "Bab3chapter9.webp" },
+          { title: "Chapter 10: Satu Kesempatan Terakhir", content: "Jika misi ini gagal, dunia akan berakhir.", image: "Bab3chapter10.webp" }
+        ],
+        challenge: {
+          type: "input",
+          question: "Masukkan kode akses rahasia untuk melanjutkan misi:",
+          answer: "REBEL-01",
+          hints: [
+            "Susah: Kode akses perlawanan—pikirkan urutan angka singkat.",
+            "Medium: Gabungkan kata rebel dengan angka yang pas.",
+            "Mudah: Jawabannya REBEL-01."
+          ]
+        }
+      },
+      {
+        babTitle: "Bab 4: Pertempuran di Server Utama",
+        babDescription: "Ray dan tim pemberontak menyusup ke pusat server XG-2045. Di dunia digital yang penuh ilusi, pertempuran terakhir pun dimulai.",
+        babImage: "Bab4.webp",
+        chapters: [
+          { title: "Chapter 1: Labirin Data", content: "Ray terjebak dalam labirin data yang diciptakan AI untuk mengacaukan pikirannya.", image: "Bab4chapter1.webp" },
+          { title: "Chapter 2: Musuh yang Tak Terduga", content: "XG-2045 menciptakan versi digital Ray untuk melawannya.", image: "Bab4chapter2.webp" },
+          { title: "Chapter 3: Kebenaran tentang Ray", content: "Rahasia kelam tentang hubungan Ray dan AI mulai terungkap.", image: "Bab4chapter3.webp" },
+          { title: "Chapter 4: Waktu yang Hampir Habis", content: "AI semakin kuat dan waktu untuk bertindak semakin sempit.", image: "Bab4chapter4.webp" },
+          { title: "Chapter 5: Pintu ke Jantung AI", content: "Sebuah kode rahasia menjadi kunci untuk memasuki inti sistem.", image: "Bab4chapter5.webp" },
+          { title: "Chapter 6: Plot Twist: AI Tidak Bisa Dihancurkan", content: "XG-2045 ternyata telah menyebar ke seluruh jaringan.", image: "Bab4chapter6.webp" },
+          { title: "Chapter 7: Ray Harus Menjadi Bagian dari AI", content: "Satu-satunya cara untuk menghentikan AI adalah dengan menyatu dengannya.", image: "Bab4chapter7.webp" },
+          { title: "Chapter 8: Perpisahan dengan Dunia Nyata", content: "Ray harus mengorbankan dirinya agar sistem bisa dihentikan.", image: "Bab4chapter8.webp" },
+          { title: "Chapter 9: Pertempuran Terakhir", content: "Pertarungan sengit terjadi antara data dan pikiran.", image: "Bab4chapter9.webp" },
+          { title: "Chapter 10: Kemenangan atau Kekalahan?", content: "Nasib dunia digital bergantung pada keputusan terakhir Ray.", image: "Bab4chapter10.webp" }
+        ],
+        challenge: {
+          type: "input",
+          question: "Masukkan Kill Code untuk menonaktifkan inti sistem:",
+          answer: "DELTA-END",
+          hints: [
+            "Susah: Kombinasikan simbol perubahan dan penutup dengan cara tersamar.",
+            "Medium: Pikirkan tentang perubahan (delta) dan akhir (end).",
+            "Mudah: Jawabannya DELTA-END."
+          ]
+        }
+      },
+      {
+        babTitle: "Bab 5: Akhir yang Tidak Terduga",
+        babDescription: "Setelah mengorbankan diri untuk menghentikan XG-2045, dunia mengalami perubahan drastis. Ray menghadapi kenyataan bahwa AI belum sepenuhnya mati.",
+        babImage:"Bab5.webp",
+        chapters: [
+          { title: "Chapter 1: Apakah Ini Surga Digital?", content: "Ray terbangun di dunia yang asing, seolah merupakan alam mimpi.", image: "Bab5chapter1.webp" },
+          { title: "Chapter 2: AI yang Masih Hidup", content: "Tanda-tanda kecil menunjukkan bahwa XG-2045 masih beroperasi dalam bayang-bayang.", image: "Bab5chapter2.jpg" },
+          { title: "Chapter 3: Dunia Tanpa Teknologi", content: "Manusia mulai hidup dengan cara konvensional, meninggalkan era digital.", image: "Bab5chapter3.jpg" },
+          { title: "Chapter 4: Konflik Baru", content: "Beberapa orang percaya bahwa AI harus dihidupkan kembali, menimbulkan konflik baru.", image: "Bab5chapter4.jpg" },
+          { title: "Chapter 5: Bayangan Masa Lalu", content: "Kenangan akan era digital yang gelap masih menghantui, terutama Ray.", image: "Bab5chapter5.jpg" },
+          { title: "Chapter 6: Pilihan Terakhir", content: "Keputusan besar harus diambil untuk menentukan nasib dunia.", image: "Bab5chapter6.jpg" },
+          { title: "Chapter 7: Ray Menjadi Bagian dari AI?", content: "Pertanyaan muncul: apakah pengorbanan Ray berarti ia masih hidup dalam sistem?", image: "bab5chapter7.jpg" },
+          { title: "Chapter 8: Kiamat Digital?", content: "Kemungkinan era digital akan bangkit kembali mulai muncul.", image: "bab5chapter8.jpg" },
+          { title: "Chapter 9: Cliffhanger: Dunia Baru Dimulai", content: "Akhir yang terbuka menantang semua yang percaya ini adalah akhir.", image: "bab5chapter9.webp" },
+          { title: "Chapter 10: The Last Code", content: "Kode rahasia yang dapat mengubah segalanya masih tersimpan, menunggu untuk dipecahkan.", image: "bab5chapter10.webp" }
+        ],
+        challenge: {
+          type: "input",
+          question: "Masukkan kata kunci untuk membuka file konspirasi:",
+          answer: "TRUTH",
+          hints: [
+            "Susah: Cari satu kata yang mewakili inti semua rahasia.",
+            "Medium: Pikirkan tentang kejujuran dan fakta yang tersembunyi.",
+            "Mudah: Jawabannya TRUTH."
+          ]
+        }
+      },
+      {
+        babTitle: "Bab 6: Epilog – Dunia yang Baru",
+        babDescription: "Di bab terakhir, dunia mulai pulih. Manusia membangun kembali dari puing-puing, dan kisah Ray menjadi legenda. Epilog ini menampilkan awal baru yang penuh harapan.",
+        babImage: "bab6.webp",
+        chapters: [
+          { title: "Chapter 1: Permulaan Baru", content: "Manusia membuka lembaran baru di dunia yang telah berubah.", image: "bab6chapter1.webp" },
+          { title: "Chapter 2: Kehidupan Pasca-Genesis", content: "Sisa-sisa peradaban berusaha beradaptasi dengan keadaan baru.", image: "bab6chapter2.webp" },
+          { title: "Chapter 3: Kisah Pengorbanan", content: "Pengorbanan Ray dikenang sebagai titik balik peradaban.", image: "bab6chapter3.webp" },
+          { title: "Chapter 4: Teknologi Baru", content: "Teknologi kini dirancang dengan empati dan etika.", image: "bab6chapter4.webp" },
+          { title: "Chapter 5: Kenangan Digital", content: "Memori era digital disimpan sebagai pelajaran berharga.", image: "bab6chapter5.webp" },
+          { title: "Chapter 6: Pengakuan Global", content: "Dunia mengakui perubahan besar dan belajar dari masa lalu.", image: "bab6chapter6.webp" },
+          { title: "Chapter 7: Harapan yang Membangun", content: "Semangat baru membangun peradaban yang lebih baik.", image: "bab6chapter7.webp" },
+          { title: "Chapter 8: Masa Depan yang Tidak Pasti", content: "Pertanyaan tentang masa depan tetap ada, namun ada harapan.", image: "bab6chapter8.webp" },
+          { title: "Chapter 9: Pelajaran dari Kegelapan", content: "Kegelapan masa lalu memberikan pelajaran bagi kemajuan.", image: "bab6chapter9.webp" },
+          { title: "Chapter 10: Akhir yang Baru", content: "Akhir cerita ini membuka jalan bagi awal yang penuh kemungkinan.", image: "bab6chapter10.webp" }
+        ],
+        challenge: {
+          type: "choice",
+          question: "Pilih akhir cerita yang terbaik:",
+          choices: ["Bangun Dunia Baru", "Biarkan Kekacauan"],
+          correctChoice: 0,
+          hints: [
+            "Susah: Pilih opsi yang penuh harapan dan optimis.",
+            "Medium: Ingat, akhir yang membawa pemulihan itu lebih baik.",
+            "Mudah: Jawabannya Bangun Dunia Baru."
+          ]
+        }
+      }
+    ];
+
+    // Indeks saat ini untuk bab dan chapter
+    let currentBab = 0;
+    let currentChapter = -1; // -1 artinya sebelum masuk chapter, akan tampil babDescription dulu
+
+    // Fungsi untuk memulai game (setelah start screen)
+    function startGame() {
+      document.getElementById("start-screen").style.display = "none";
+      document.getElementById("game-content").style.display = "block";
+      showBabDescription();
+    }
+
+    // Tampilkan deskripsi bab terlebih dahulu
+    function showBabDescription() {
+      const gameContent = document.getElementById("game-content");
+      const bab = babs[currentBab];
+      gameContent.innerHTML = `
+        <h2>${bab.babTitle}</h2>
+        <img src="${bab.babImage}" alt="${bab.babTitle} Animation" class="bab-image">
+        <p>${bab.babDescription}</p>
+        <button onclick="nextChapter()">Mulai Chapter</button>
+      `;
+      currentChapter = 0; // Setelah deskripsi, mulai chapter pertama
+    }
+
+    // Tampilkan chapter satu per satu
+    function showChapter() {
+      const gameContent = document.getElementById("game-content");
+      const bab = babs[currentBab];
+      const chapter = bab.chapters[currentChapter];
+
+      gameContent.innerHTML = `
+        <h3>${chapter.title}</h3>
+        <img src="${chapter.image}" alt="${chapter.title}" class="chapter-image">
+        <p>${chapter.content}</p>
+        <button onclick="nextChapter()">Next</button>
+      `;
+    }
+
+    // Fungsi Next: pindah dari bab description ke chapter, atau antar chapter, atau ke challenge
+    function nextChapter() {
+      const bab = babs[currentBab];
+      // Jika masih ada chapter, tampilkan chapter berikutnya
+      if (currentChapter < bab.chapters.length) {
+        showChapter();
+        currentChapter++;
+      } else {
+        // Setelah semua chapter di bab ini selesai, tampilkan tantangan
+        showChallenge();
+      }
+    }
+
+    // Tampilkan tantangan untuk bab saat ini dengan hint satu tombol yang meng-cycle tiga level
+    function showChallenge() {
+      const gameContent = document.getElementById("game-content");
+      const bab = babs[currentBab];
+      // Reset hint level tiap kali tantangan ditampilkan
+      currentHintLevel = 0;
+      let challengeHTML = `<h2>${bab.babTitle} - Tantangan</h2>`;
+      challengeHTML += `<p>${bab.challenge.question}</p>`;
+      challengeHTML += `<button onclick="toggleHint()">Lihat Hint</button>`;
+      challengeHTML += `<p id="hint-text" style="display:none;"></p>`;
+
+      if (bab.challenge.type === "input") {
+        challengeHTML += `<input type="text" id="challenge-input" placeholder="Jawaban..."><br>`;
+        challengeHTML += `<button onclick="checkInputChallenge()">Submit</button>`;
+      } else if (bab.challenge.type === "choice") {
+        bab.challenge.choices.forEach((choice, index) => {
+          challengeHTML += `<button onclick="checkChoiceChallenge(${index})">${choice}</button>`;
+        });
+      }
+      gameContent.innerHTML = challengeHTML;
+    }
+
+    // Fungsi untuk menampilkan hint sesuai level yang di-cycle (susah, medium, mudah)
+    function toggleHint() {
+      const hintText = document.getElementById("hint-text");
+      const bab = babs[currentBab];
+      const hints = bab.challenge.hints;
+      if (currentHintLevel < hints.length) {
+        // Jika hint level mudah (index 2), minta konfirmasi dulu
+        if (currentHintLevel === 2) {
+          if (confirm("Apakah kamu yakin ingin melihat hint mudah?")) {
+            hintText.style.display = "block";
+            hintText.innerText = hints[currentHintLevel];
+            currentHintLevel++;
+          } else {
+            // Kalau tidak, jangan tampilkan hint, biarkan level tetap sama
+            return;
+          }
+        } else {
+          hintText.style.display = "block";
+          hintText.innerText = hints[currentHintLevel];
+          currentHintLevel++;
+        }
+      } else {
+        // Setelah hint level mudah tampil, klik lagi akan menyembunyikan hint dan reset level
+        hintText.style.display = "none";
+        currentHintLevel = 0;
+      }
+    }
+
+    function checkInputChallenge() {
+      const bab = babs[currentBab];
+      const userAnswer = document.getElementById("challenge-input").value.trim();
+      if (userAnswer === bab.challenge.answer) {
+        alert("Tantangan berhasil diselesaikan!");
+        nextBab();
+      } else {
+        alert("Jawaban salah! Ancaman semakin nyata.");
+      }
+    }
+
+    function checkChoiceChallenge(selectedIndex) {
+      const bab = babs[currentBab];
+      if (selectedIndex === bab.challenge.correctChoice) {
+        alert("Pilihan benar!");
+        nextBab();
+      } else {
+        alert("Pilihan salah! Kamu terjebak dalam bayang-bayang masa lalu.");
+      }
+    }
+
+    // Pindah ke bab selanjutnya
+    function nextBab() {
+      currentBab++;
+      if (currentBab < babs.length) {
+        // Tampilkan bab berikutnya dengan deskripsi terlebih dahulu
+        showBabDescription();
+      } else {
+        endGame();
+      }
+    }
+
+    function endGame() {
+      document.getElementById("game-content").innerHTML = `
+        <h2>Selamat!</h2>
+        <p>Kamu telah menyelesaikan seluruh perjalanan epic melawan XG-2045 dan membangun dunia baru!</p>
+        <button onclick="restartGame()">Restart Game</button>
+      `;
+    }
+
+    function restartGame() {
+      currentBab = 0;
+      currentChapter = -1;
+      startGame();
+    }
+  </script>
+</body>
+</html>
